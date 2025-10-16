@@ -90,7 +90,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
                   ? Column(
                     children: [
                       Text(
-                        'Scanned: ${result!.code}',
+                        'Scanned: ${result!.code.toString().split(':::')[1]}',
                         textAlign: TextAlign.center,
                         style: const TextStyle(fontSize: 18),
                       ),
@@ -98,7 +98,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
                         onPressed: () {
                           doPayment(int.parse(result!.code.toString().split(':::')[0]), int.parse(result!.code.toString().split(':::')[1]));
                         },
-                        child: const Text('Copy'),
+                        child: const Text('Send'),
                       )
                     ]
                   )

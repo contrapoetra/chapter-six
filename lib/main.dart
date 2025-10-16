@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'qr.dart';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const App());
@@ -28,13 +29,26 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int balance = 36000;
+  int balance = 0;
   String token = 'mYxyCBM4KnjX0ZyMEYCG5Mb8k2S';
   String kv = 'payments';
   String currentPaymentQR = '';
   String currentPaymentToken = '';
   String currentPaymentStatus = '';
   bool loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      balance = prefs.getInt('balance') ?? 100000;
+    });
+  }
 
   TextEditingController amountController = TextEditingController();
 
@@ -106,6 +120,8 @@ class _HomeState extends State<Home> {
       if (currentPaymentStatus == "paid") {
         currentPaymentQR = '';
         balance += int.parse(currentPaymentToken.split(':::')[1]);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setInt('balance', balance);
       }
       amountController.text = '';
       setState(() {
